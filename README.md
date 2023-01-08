@@ -1,8 +1,10 @@
 # Remote Hub
 
-A utility class to easily create remotes. inspired by Sleitnick's [Signal](https://sleitnick.github.io/RbxUtil/api/Signal/), & [Net](https://sleitnick.github.io/RbxUtil/api/Net).
+# Remote Hub
 
-This utility does not tries to pull magic wizardry, or meta-brograming, *it just wraps around Remote instances (remote events, remote function, and object values) to make them easy to create through code, instead of having to deal with roblox instances, and it gives them a bit more of functionality.*
+An interface to create more powerful remote communications inspired by Sleitnick's [Signal](https://sleitnick.github.io/RbxUtil/api/Signal/), & [Net](https://sleitnick.github.io/RbxUtil/api/Net).
+
+This utility does not tries to pull magic wizardry, or meta-brograming, *it just wraps around Remote instances (remote events, remote function, and object values) and give them much more functionality.*
 
 
 # API's
@@ -121,7 +123,7 @@ Each API has it's server and client version you can seamlessly retrieve
 
 ## Function
 
-## BaseValue
+## Value
 
 ### Properties
 
