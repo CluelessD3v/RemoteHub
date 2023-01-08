@@ -5,6 +5,9 @@ An interface to create more powerful remote communications inspired by Sleitnick
 This utility does not tries to pull magic wizardry, or meta-brograming, *it just wraps around Remote instances (remote events, remote function, and object values) and give them much more functionality.*
 
 
+**NOTE: This is just a pre-release, there's no type checking, not a whole lot of handling, and no implementation for remote functions. These docos are placeholders!**
+
+
 # How to require:
 All 3 interfaces are already indexed through Remote Hub, so no need to require anything else than Remote Hub module
 
