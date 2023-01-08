@@ -5,10 +5,6 @@ local RemoteEvents: Folder = script.Parent.RemoteEvents
 local EventServer = {} 
 EventServer.__index = EventServer
 
-
-local EventServer = {} 
-EventServer.__index = EventServer
-
 function EventServer.new(name: string)
     local self = setmetatable({}, EventServer)
     

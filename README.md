@@ -1,10 +1,22 @@
 # Remote Hub
 
-# Remote Hub
-
 An interface to create more powerful remote communications inspired by Sleitnick's [Signal](https://sleitnick.github.io/RbxUtil/api/Signal/), & [Net](https://sleitnick.github.io/RbxUtil/api/Net).
 
 This utility does not tries to pull magic wizardry, or meta-brograming, *it just wraps around Remote instances (remote events, remote function, and object values) and give them much more functionality.*
+
+
+# How to require:
+All 3 interfaces are already indexed through Remote Hub, so no need to require anything else than Remote Hub module
+
+```lua
+local RemoteHub = require(ReplicatedStorage.RemoteHub)
+local Event = RemoteHub.Event
+local NewEvent = Event.new("TestEvent")
+
+local Value = RemoteHub.Value
+local newVal = Value.new("TestVal", Value.IntValue, 10)
+```
+
 
 
 # API's
@@ -168,14 +180,3 @@ Each API has it's server and client version you can seamlessly retrieve
 
 
 
-# How to require:
-All 3 interfaces are already indexed through Remote Hub, so no need to require anything else than Remote Hub module
-
-```lua
-local RemoteHub = require(ReplicatedStorage.RemoteHub)
-local Event = RemoteHub.Event
-local NewEvent = Event.new("TestEvent")
-
-local Value = RemoteHub.Value
-local newVal = Value.new("TestVal", Value.IntValue, 10)
-```
