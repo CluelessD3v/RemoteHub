@@ -135,10 +135,18 @@ Each API has it's server and client version you can seamlessly retrieve
 >**`any` (Value type dependant) **
 >*Holds a reference to a value*
 
+#### `ValueTypes`
+>**`Dictionary<string, string>`**
+>*A dictionary of object value types you can use to pass to the server constructor function in case you don't want to use string literals.*
+
+
+
 ### Events
 #### `Changed`
 >**RbxScriptSignal**
 >*Fired whenever the Value is changed.*
+
+
 
 
 ### Methods
@@ -156,3 +164,18 @@ Each API has it's server and client version you can seamlessly retrieve
 
 [[abstract | Client]]
 | these methods can only be used in local scripts and modules required by local scripts
+
+
+
+
+# How to require:
+All 3 interfaces are already indexed through Remote Hub, so no need to require anything else than Remote Hub module
+
+```lua
+local RemoteHub = require(ReplicatedStorage.RemoteHub)
+local Event = RemoteHub.Event
+local NewEvent = Event.new("TestEvent")
+
+local Value = RemoteHub.Value
+local newVal = Value.new("TestVal", Value.IntValue, 10)
+```
