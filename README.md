@@ -58,7 +58,7 @@ Each API has it's server and client version you can seamlessly retrieve
 
 
 #### `FireAllClients`
->**Params: **`(...:any)`**
+>**Params: `(...:any)`**
 > *Equal to FireAllClients*
  
 
