@@ -3,6 +3,6 @@
 registry = "test"
 
 [[package]]
-name = "kike/remotelib"
+name = "kike/remotehub"
 version = "0.1.0"
 dependencies = []
