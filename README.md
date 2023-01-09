@@ -20,6 +20,7 @@ local Value = RemoteHub.Value
 local newVal = Value.new("TestVal", Value.IntValue, 10)
 ```
 
+# **[Get in on wally](https://wally.run/package/cluelessd3v/remotehub)**
 
 
 # API's
