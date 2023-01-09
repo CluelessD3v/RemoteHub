@@ -54,12 +54,12 @@ end
 
 function EventServer:FireAllClientsInRadius(theRadius: number, thePosition: Vector3, ...:any)
     for _, aPlayer: Player in Players:GetPlayers() do
-        local Character = aPlayer.Character
-        if not Character then continue end
+        local theCharacter = aPlayer.Character
+        if not theCharacter then continue end
 
-        local CharacterPos: Vector3 = Character:GetPivot().Position
+        local theCharacterPos: Vector3 = theCharacter:GetPivot().Position
         
-        if (CharacterPos - thePosition).Magnitude <= theRadius then
+        if (theCharacterPos - thePosition).Magnitude <= theRadius then
             self:FireClient(aPlayer, ...)
         end
     end

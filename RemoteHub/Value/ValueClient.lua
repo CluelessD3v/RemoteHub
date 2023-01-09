@@ -1,4 +1,6 @@
-local ValuesFolder: Folder = script.Parent.Values
+local ValuesFolder: Folder = script.Parent.GlobalValues
+
+
 
 
 local ValueClient = {} 

@@ -1,7 +1,10 @@
 [package]
-name = "kike/remotelib"
+name = "kike/remotehub"
 version = "0.1.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
+
+license = "MIT OR Apache-2.0"
+authors = ["Joaquin Von Chong <cluelessdevmail@gmail.com>"]
 
 [dependencies]

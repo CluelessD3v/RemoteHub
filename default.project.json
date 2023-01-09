@@ -5,8 +5,6 @@
 
     "ReplicatedStorage": {
         "$className":"ReplicatedStorage",
-        "$path": "Shared",
-
         "RemoteHub":{
           "$path":"RemoteHub"
         }
@@ -14,13 +12,19 @@
 
     "ServerScriptService": {
       "$className":"ServerScriptService",
-      "$path": "Server"
+      "Server":{
+        "$path": "Server"
+      }
     },
 
     "StarterPlayer": {
       "StarterPlayerScripts": {
       "$className":"StarterPlayerScripts",
-        "$path": "Client"
+
+
+        "Client":{
+          "$path":"Client"
+        }
       }
     },
 
