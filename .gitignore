@@ -4,7 +4,7 @@
 # Roblox Studio lock files
 /*.rbxlx.lock
 /*.rbxl.lock
-/Shared
-/Server
-/Client
-default.project.json
+
+Shared
+Server
+Client

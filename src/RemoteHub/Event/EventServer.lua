@@ -1,5 +1,8 @@
 local Players = game:GetService("Players")
-local RemoteEvents: Folder = script.Parent.RemoteEvents
+
+local RemoteEvents: Folder = Instance.new("Folder")
+RemoteEvents.Name   = "RemoteEvents"
+RemoteEvents.Parent = script.Parent
 
 
 local EventServer = {} 

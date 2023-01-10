@@ -7,7 +7,6 @@ if RunService:IsServer() then
 else
     RemoteHub.Event = require(script.Event.EventClient)
     RemoteHub.Value = require(script.Value.ValueClient)
-
 end
 
 

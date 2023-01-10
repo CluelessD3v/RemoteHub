@@ -1,5 +1,12 @@
-local ValuesFolder: Folder = script.Parent.GlobalValues
-local InstanceValues: Folder = script.Parent.InstanceValues
+local GlobalValues = Instance.new("Folder")
+GlobalValues.Name   = "GlobalVlues"
+GlobalValues.Parent = script.Parent
+
+
+local InstanceValues: Folder = Instance.new("Folder")
+InstanceValues.Name   = "InstanceValues"
+InstanceValues.Parent = script.Parent
+
 
 local ValueServer = {} 
 ValueServer.__index = ValueServer
@@ -20,7 +27,6 @@ local function buildValueBase(theName: string, theValueType: string, anInitialVa
     local TheNewValueBase: ValueBase = Instance.new(theValueType)
     TheNewValueBase.Name   = theName
     TheNewValueBase.Value  = anInitialValue
-    TheNewValueBase.Parent = ValuesFolder
 
     return TheNewValueBase
 end
@@ -30,6 +36,7 @@ function ValueServer.new(theName: string, theValueType: string, anInitialValue: 
     local self = setmetatable({}, ValueServer)
 
     local TheNewValueBase: ValueBase = buildValueBase(theName, theValueType, anInitialValue)
+    TheNewValueBase.Parent = GlobalValues
 
     self.Name    = theName
     self.Changed = TheNewValueBase.Changed
