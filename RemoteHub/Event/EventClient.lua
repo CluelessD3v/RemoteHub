@@ -8,7 +8,7 @@ function EventClient.getEvent(name: string, timeout: number)
     local self = setmetatable({}, EventClient)
     self.Name = name
 
-    local elapsedTime          = 0
+    local theElapsedTime          = 0
     local timeoutAt            = timeout or 5
     local MyEvent: RemoteEvent = RemoteEvents:FindFirstChild(name)
 
@@ -22,10 +22,10 @@ function EventClient.getEvent(name: string, timeout: number)
                 break
             end
 
-            elapsedTime += 1
+            theElapsedTime += 1
             task.wait(1)
     
-        until elapsedTime > timeoutAt
+        until theElapsedTime > timeoutAt
     end
 
 
