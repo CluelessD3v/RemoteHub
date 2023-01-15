@@ -5,7 +5,12 @@ registry = "test"
 [[package]]
 name = "cluelessd3v/remotehub"
 version = "0.1.4"
-dependencies = [["stew", "solarscuffle-bot/stew@1.0.6"]]
+dependencies = [["Loader", "sleitnick/loader@2.0.0"], ["Stew", "solarscuffle-bot/stew@1.0.6"]]
+
+[[package]]
+name = "sleitnick/loader"
+version = "2.0.0"
+dependencies = []
 
 [[package]]
 name = "solarscuffle-bot/stew"
