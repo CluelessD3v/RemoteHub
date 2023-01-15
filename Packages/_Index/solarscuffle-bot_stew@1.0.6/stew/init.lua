@@ -55,7 +55,7 @@ end
 
 type Signature = string
 
-export type Name = any
+export type Name = any  
 
 export type Component = any
 
@@ -66,11 +66,11 @@ export type Entity = {
 export type Collection = { Entity }
 
 export type Template = {
-	Constructor : ((Entity : Entity, ...any) -> (any))?;
-	constructor : ((Entity : Entity, ...any) -> (any))?;
+	Constructor : ((Entity : Entity, Name : Name,  ...any) -> (any))?;
+	constructor : ((Entity : Entity, Name : Name,  ...any) -> (any))?;
 
-	Destructor : ((Entity : Entity, Component : Component, ...any) -> ())?;
-	destructor : ((Entity : Entity, Component : Component, ...any) -> ())?;
+	Destructor : ((Entity : Entity, Name : Name, ...any) -> ())?;
+	destructor : ((Entity : Entity, Name : Name, ...any) -> ())?;
 }
 
 local NextPlace = 1
@@ -140,8 +140,8 @@ Module.ConstructComponent = function(Name : Name, Template : Template)
 	NameToData[Name] = {
 		Signature = StringPlace(NextPlace);
 
-		Constructor = Template.Constructor or Template.constructor or function(Entity, ...) return true end;
-		Destructor = Template.Destructor or Template.destructor or function(Entity, Component, ...) end;
+		Constructor = Template.Constructor or Template.constructor or function(Entity, Name, ...) return true end;
+		Destructor = Template.Destructor or Template.destructor or function(Entity, Name, ...) end;
 	}
 
 	NextPlace += 1
@@ -155,7 +155,7 @@ Module.CreateComponent = function(Entity : Entity, Name : Name, ... : any)
         Module.DeleteComponent(Entity, Name)
     end
 
-	Entity[Name] = Data.Constructor(Entity, ...)
+	Entity[Name] = Data.Constructor(Entity, Name, ...)
     if Entity[Name] == nil then return end
 
 	EntitySignatures[Entity] = StringBOr(EntitySignatures[Entity], Data.Signature)
@@ -177,7 +177,7 @@ Module.DeleteComponent = function(Entity : Entity, Name : Name, ... : any)
 	local Component = Entity[Name]
 	if not Component then return end
 
-    if Data.Destructor(Entity, Component, ...) ~= nil then return end
+    if Data.Destructor(Entity, Name, ...) ~= nil then return end
 
 	Entity[Name] = nil
 	EntitySignatures[Entity] = StringBAnd(EntitySignatures[Entity], StringBNot(Data.Signature))

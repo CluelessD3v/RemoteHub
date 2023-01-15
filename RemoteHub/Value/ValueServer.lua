@@ -7,23 +7,11 @@ export type Value = {
 }
 
 
-
+local Table2String = require(script.Parent.Parent.TableToString)
 
 local GlobalValuesFolder = Instance.new("Folder")
-GlobalValuesFolder.Name   = "GlobalVlues"
+GlobalValuesFolder.Name   = "GlobalValues"
 GlobalValuesFolder.Parent = script.Parent
-
-
-local GlobalNamespacesFolder = Instance.new("Folder")
-GlobalNamespacesFolder.Name   = "Namespaces"
-GlobalNamespacesFolder.Parent = script.Parent
-
-
-local globalValuesDict = {}:: {string: Value}
-local globalNameSpacesDict = {}::{string: {string: Value}}  
-
-
-local instanceValuesMap = {}:: {Instance: Value} & {Instance:{string: Value}}
 
 
 
@@ -62,8 +50,7 @@ local function BuildProxy(self, theObjectValue)
         end,
 
         __tostring = function()
-            print(self)
-            return ""
+            return Table2String(self, 4)
         end,
     })
 
@@ -76,7 +63,6 @@ end
 -- !== ================================================================================||>
 local ValueServer = {} 
 ValueServer.__index = ValueServer
-
 
 -- =============================== Properties ===============================||>
 ValueServer.ValueTypes = {
@@ -91,6 +77,9 @@ ValueServer.ValueTypes = {
     RayValue        = "RayValue",
 }
 
+ValueServer.GlobalValuesMap    = {}:: {string: Value}
+ValueServer.InstancesValuesMap = {}:: {Instance: Value} & {Instance:{string: Value}}
+
 
 
 -- =============================== Methods ===============================||>
@@ -100,33 +89,34 @@ ValueServer.ValueTypes = {
 --]]
 function ValueServer.new(theObjectValueData: Value, aNamespace: string?)
     local self            = setmetatable({}, ValueServer)
-    local ANewObjectValue = BuildObjectValueAndMapIt2Self(self, theObjectValueData)
-    local proxy           = BuildProxy(self, ANewObjectValue)
+    local NewObjectValue = BuildObjectValueAndMapIt2Self(self, theObjectValueData)
+    local proxy           = BuildProxy(self, NewObjectValue)
 
 
     if aNamespace then  
-        local anExistingNamespaceFolder = script.Parent:FindFirstChild(aNamespace)
+        local anExistingNamespace = ValueServer.GlobalValuesMap[aNamespace]
 
-        if anExistingNamespaceFolder then
-            ANewObjectValue.Parent = anExistingNamespaceFolder
+        if not anExistingNamespace then
+            NewObjectValue.Parent = anExistingNamespace
 
-
-        else 
+            --# namespace folder for the Object values instances versions
             local NewNamespaceFolder = Instance.new("Folder")
             NewNamespaceFolder.Name   = aNamespace
-            NewNamespaceFolder.Parent = GlobalNamespacesFolder
+            NewNamespaceFolder.Parent = GlobalValuesFolder
+        
+            ValueServer.GlobalValuesMap[aNamespace] = {}
 
-            ANewObjectValue.Parent = NewNamespaceFolder
-
-            globalNameSpacesDict[aNamespace] = {}
+            anExistingNamespace       = ValueServer.GlobalValuesMap[aNamespace]
         end 
 
-        globalNameSpacesDict[aNamespace][self.Name] = proxy
+        local AnExitingsNamespaceFolder = GlobalValuesFolder[aNamespace]
 
+        anExistingNamespace[self.Name] = proxy
+        NewObjectValue.Parent = AnExitingsNamespaceFolder
     
     else 
-        ANewObjectValue.Parent = GlobalValuesFolder
-        globalValuesDict[self.Name] = proxy
+        NewObjectValue.Parent = GlobalValuesFolder
+        ValueServer.GlobalValuesMap[self.Name] = proxy
     end
 
     
@@ -134,42 +124,49 @@ function ValueServer.new(theObjectValueData: Value, aNamespace: string?)
 end
 
 
-
+--[[
+    + Creates a new object value of the given type for the given instance
+    + Optionally give it a namespace so you can segregate object values with same names or different functioanlities, basically folders.
+--]]
 function ValueServer.newForInstance(theInstance: Instance, theObjectValueData: Value, aNamespace: string)
     local self            = setmetatable({}, ValueServer)
     local ANewObjectValue = BuildObjectValueAndMapIt2Self(self, theObjectValueData)
     local proxy           = BuildProxy(self, ANewObjectValue)
 
 
+    --## Creating the instance object values table if it doesn't exists
+    local anInstanceValuesDict = ValueServer.InstancesValuesMap[theInstance] 
+    if anInstanceValuesDict == nil then
+        ValueServer.InstancesValuesMap[theInstance] = {}
+    end 
 
 
     if aNamespace then  
         local anExistingNamespaceFolder = theInstance:FindFirstChild(aNamespace)
 
-        if anExistingNamespaceFolder then
+        if anExistingNamespaceFolder then --# Parent to an existing namespace folder
             ANewObjectValue.Parent = anExistingNamespaceFolder
 
-        else 
+        else --# Create the namespace folder & namespace table
             local NewNamespaceFolder = Instance.new("Folder")
             NewNamespaceFolder.Name   = aNamespace
             NewNamespaceFolder.Parent = theInstance
 
             ANewObjectValue.Parent = NewNamespaceFolder
+            ValueServer.InstancesValuesMap[theInstance][aNamespace] = {}
         end 
 
-        instanceValuesMap[theInstance][aNamespace][self.Name] = proxy
+        --## Add the object value to the instance values namespace table
+        ValueServer.InstancesValuesMap[theInstance][aNamespace][self.Name] = proxy
+
     
-    else 
-        if instanceValuesMap[theInstance] == nil then
-            instanceValuesMap[theInstance] = {}
-        end 
-
+    else --# Just parent the object value to the instance & add it to the instance object values table
         ANewObjectValue.Parent = theInstance
-        instanceValuesMap[theInstance][self.Name] = proxy
+        ValueServer.InstancesValuesMap[theInstance][self.Name] = proxy
     end
 
     
-    return proxy
+    return proxy :: Value
 end
 
 
@@ -180,37 +177,75 @@ end
     + If the requested value is in a namespace, YOU HAVE to pass a namespace argument, this is to avoid collisions
     + between object values with the same name.
 
-    + Conversely! If the value is in a namespace but you don't pass a namespace argument, it will not return you anything.
+    + Conversely! If the value is in a namespace but you don't pass a namespace argument, it will return nil!
 ]]
-function ValueServer:GetObjectValue(theValueName: string, aNamespace: string?): ValueBase?
+function ValueServer:GetGlobalValue(theValueName: string, aNamespace: string?): Value?
     if aNamespace then
-        local foundNamespace = globalNameSpacesDict[aNamespace]
-        if foundNamespace then
-            return globalNameSpacesDict[aNamespace][theValueName] or 
-            warn(theValueName, "Value base was not found! in", aNamespace, "namespace Make sure to create the value there!")
-        else
-            warn(aNamespace, "namespace was not found! Make sure to create it first!")
-            return
+        local foundNamespace = ValueServer.GlobalValuesMap[aNamespace]
+        if foundNamespace == nil then
+            return warn(aNamespace, "namespace was not found! Are you sure the namespace exists?")
         end
-    end
 
-    local TheRequestedValue = GlobalValuesFolder[theValueName]
+        local theRequestedValue: Value = foundNamespace[theValueName]
+        if theRequestedValue == nil then
+            return warn(theValueName, "value inside", aNamespace, "Make sure to create it WITHIN the first!")
+        end 
 
-    if TheRequestedValue == true then
-        return TheRequestedValue
-    else
-        warn(theValueName, "Value base was not found!")
-        warn("Make sure to create it first OR Maybe you wanted a value that is in a namespace?")
+        return theRequestedValue
+    
+    else --# no namespace passed, so let's look directly in the global table
+        local theRequestedValue: Value = ValueServer.GlobalValuesMap[theValueName]
+
+        if theRequestedValue == nil then
+            return warn(theValueName,"Value was not found, Either: Make sure to create it first! OR that is not in a namespace")
+        end
+
+        return theRequestedValue
     end
 end
+
 
 
 --[[
-    + Returns an array of object values.
+    + If it exists, returns the object value of the given name inside the given instance
+    
+    + Note, be mindful of namespaces:
+    + If the requested value is in a namespace, YOU HAVE to pass a namespace argument, this is to avoid collisions
+    + between object values with the same name.
+
+    + Conversely! If the value is in a namespace but you don't pass a namespace argument, it will return nil!
 ]]
-function ValueServer:GetGlobalValues(): {ValueBase}
-    return GlobalValuesFolder:GetChildren()
+function ValueServer:GetValueFromInstance(theInstance: Instance, theValueName: string, aNamespace: string?): Value?
+    local theInstanceValuesMap = ValueServer.InstancesValuesMap[theInstance]
+    if theInstanceValuesMap == nil then
+        return warn(theInstance, "Does not have any registered values! Make sure to create them first!")
+    end
+
+    if aNamespace then
+        local foundNamespace = theInstanceValuesMap[aNamespace]
+        if foundNamespace == nil then
+            return warn(theInstance, "Does not have", aNamespace, "namespace. Are you sure the namespace exists?")
+        end
+
+        local theRequestedValue: Value = foundNamespace[theValueName]
+        if theRequestedValue == nil then
+            return warn(theInstance, "Does not have the", theValueName, "value inside", aNamespace, "Make sure to create it WITHIN the first!")
+        end 
+
+        return theRequestedValue
+    
+    else --# no namespace passed, so let's look directly in the instance table
+        local theRequestedValue: Value = theInstanceValuesMap[theValueName]
+
+        if theRequestedValue == nil then
+            return warn(theValueName, "Value was not found direclty under", theInstance, "Either: Make sure it exists OR it's not within a namespace")
+        end
+
+        return theRequestedValue
+    end
 end
+
+
 
 
 table.freeze(ValueServer)
