@@ -77,6 +77,8 @@ ValueServer.ValueTypes = {
     RayValue        = "RayValue",
 }
 
+
+--! NOTE: These tables are not safe to edit! Treat them as READ-ONLY
 ValueServer.GlobalValuesMap    = {}:: {string: Value}
 ValueServer.InstancesValuesMap = {}:: {Instance: Value} & {Instance:{string: Value}}
 
@@ -244,8 +246,6 @@ function ValueServer:GetValueFromInstance(theInstance: Instance, theValueName: s
         return theRequestedValue
     end
 end
-
-
 
 
 table.freeze(ValueServer)
