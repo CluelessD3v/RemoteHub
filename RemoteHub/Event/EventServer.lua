@@ -1,8 +1,8 @@
 local Players = game:GetService("Players")
 
-local RemoteEvents: Folder = Instance.new("Folder")
-RemoteEvents.Name   = "RemoteEvents"
-RemoteEvents.Parent = script.Parent
+local RemoteEventsFolder: Folder = Instance.new("Folder")
+RemoteEventsFolder.Name   = "RemoteEvents"
+RemoteEventsFolder.Parent = script.Parent
 
 
 local EventServer = {} 
@@ -13,7 +13,7 @@ function EventServer.new(name: string)
     
     local newRe = Instance.new("RemoteEvent")
     newRe.Name   = name
-    newRe.Parent = RemoteEvents
+    newRe.Parent = RemoteEventsFolder
 
     self.Name          = name
     self.OnServerEvent = newRe.OnServerEvent
@@ -27,13 +27,13 @@ end
 --# clear enough. 
 
 function EventServer:FireClient(aPlayer: Player, ...:any): nil
-    local MyEvent = RemoteEvents[self.Name]
+    local MyEvent = RemoteEventsFolder[self.Name]
     MyEvent:FireClient(aPlayer, ...)
 end
 
 
 function EventServer:FireAllClients(...:any): nil
-    local MyEvent = RemoteEvents[self.Name]
+    local MyEvent = RemoteEventsFolder[self.Name]
     MyEvent:FireAllClients(...)
 end
 
@@ -80,10 +80,20 @@ end
 
 
 function EventServer:Destroy()
-    local MyEvent = RemoteEvents[self.Name]
+    local MyEvent = RemoteEventsFolder[self.Name]
     MyEvent:Destroy()
 end
 
+
+
+function EventServer:GetEvent(theEventName: string): RemoteEvent
+    local AnEvent = RemoteEventsFolder:FindFirstChild(theEventName)
+    if AnEvent then 
+        return AnEvent
+    end
+    
+    warn("Could not find a remote event named", theEventName, "did you created it?")
+end
 
 table.freeze(EventServer)
 return EventServer
