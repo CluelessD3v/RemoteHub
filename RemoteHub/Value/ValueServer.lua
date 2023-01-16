@@ -133,7 +133,7 @@ end
 function ValueServer.newForInstance(theInstance: Instance, theObjectValueData: Value, aNamespace: string)
     local self            = setmetatable({}, ValueServer)
     local ANewObjectValue = BuildObjectValueAndMapIt2Self(self, theObjectValueData)
-    local proxy           = BuildProxy(self, ANewObjectValue)
+    local theNewObjectValueProxy           = BuildProxy(self, ANewObjectValue)
 
 
     --## Creating the instance object values table if it doesn't exists
@@ -159,16 +159,16 @@ function ValueServer.newForInstance(theInstance: Instance, theObjectValueData: V
         end 
 
         --## Add the object value to the instance values namespace table
-        ValueServer.InstancesValuesMap[theInstance][aNamespace][self.Name] = proxy
+        ValueServer.InstancesValuesMap[theInstance][aNamespace][self.Name] = theNewObjectValueProxy
 
     
     else --# Just parent the object value to the instance & add it to the instance object values table
         ANewObjectValue.Parent = theInstance
-        ValueServer.InstancesValuesMap[theInstance][self.Name] = proxy
+        ValueServer.InstancesValuesMap[theInstance][self.Name] = theNewObjectValueProxy
     end
 
     
-    return proxy :: Value
+    return theNewObjectValueProxy :: Value
 end
 
 
