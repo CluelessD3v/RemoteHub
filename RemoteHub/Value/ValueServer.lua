@@ -6,12 +6,13 @@ export type Value = {
     Value: ValueTypes
 }
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Table2String = require(script.Parent.Parent.TableToString)
 
 local GlobalValuesFolder = Instance.new("Folder")
 GlobalValuesFolder.Name   = "GlobalValues"
-GlobalValuesFolder.Parent = script.Parent
+GlobalValuesFolder.Parent = ReplicatedStorage
 
 
 

@@ -7,7 +7,7 @@ local ValueClient = {}
 ValueClient.__index = ValueClient
 
 
-function ValueClient.getValue(theObjectValueName: string, aNamespace: string?)
+function ValueClient.get(theObjectValueName: string, aNamespace: string?)
     local TheRequestedValue: ValueBase
 
     local elapsedTime: number      = 0
@@ -62,7 +62,7 @@ end
 
 
 
-function ValueClient.getValueFromInstance(theInstance: Instance, theObjectValueName: string, aNamespace: string?)
+function ValueClient.getFromInstance(theInstance: Instance, theObjectValueName: string, aNamespace: string?)
     local TheRequestedValue: ValueBase
 
     local elapsedTime: number      = 0
