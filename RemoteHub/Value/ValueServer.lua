@@ -90,9 +90,9 @@ ValueServer.InstancesValuesMap = {}:: {Instance: Value} & {Instance:{string: Val
     + Optionally give it a namespace so you can segregate object values with same names or different functioanlities, basically folders.
 --]]
 function ValueServer.new(theObjectValueData: Value, aNamespace: string?)
-    local self            = setmetatable({}, ValueServer)
-    local NewObjectValue = BuildObjectValueAndMapIt2Self(self, theObjectValueData)
-    local proxy           = BuildProxy(self, NewObjectValue)
+    local self                   = setmetatable({}, ValueServer)
+    local NewObjectValue         = BuildObjectValueAndMapIt2Self(self, theObjectValueData)
+    local theNewObjectValueProxy = BuildProxy(self, NewObjectValue)
 
 
     if aNamespace then  
@@ -113,16 +113,16 @@ function ValueServer.new(theObjectValueData: Value, aNamespace: string?)
 
         local AnExitingsNamespaceFolder = GlobalValuesFolder[aNamespace]
 
-        anExistingNamespace[self.Name] = proxy
+        anExistingNamespace[self.Name] = theNewObjectValueProxy
         NewObjectValue.Parent = AnExitingsNamespaceFolder
     
     else 
         NewObjectValue.Parent = GlobalValuesFolder
-        ValueServer.GlobalValuesMap[self.Name] = proxy
+        ValueServer.GlobalValuesMap[self.Name] = theNewObjectValueProxy
     end
 
     
-    return proxy:: Value
+    return theNewObjectValueProxy:: Value
 end
 
 

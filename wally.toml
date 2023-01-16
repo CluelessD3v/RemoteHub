@@ -7,5 +7,5 @@ license = "MIT OR Apache-2.0"
 authors = ["Joaquin Von Chong/Clueless_Dev <cluelessdevmail@gmail.com>"]
 
 [dependencies]
-Stew = "solarscuffle-bot/stew@1.0.6"
-Loader = "sleitnick/loader@2.0.0"
+stew = "solarscuffle-bot/stew@1.0.8"
+loader = "sleitnick/loader@2.0.0"
