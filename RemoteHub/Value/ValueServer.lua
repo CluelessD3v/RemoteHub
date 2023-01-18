@@ -1,19 +1,20 @@
 type ValueTypes = string | number | boolean | CFrame | Vector3 | Color3 | BrickColor 
 
-export type ValueComponent = { 
+type ValueComponent = { 
     Changed: RBXScriptSignal,
     Name: string,
     Value: ValueTypes
 }
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Table2String = require(script.Parent.Parent.TableToString)
 
 local TheObjectValuesFolder = Instance.new("Folder")
 TheObjectValuesFolder.Name   = "ObjectValues"
 TheObjectValuesFolder.Parent = script.Parent
 
+local ValueCreated: RemoteEvent = Instance.new("RemoteEvent")
+ValueCreated.Name = "ValueCreated"
+ValueCreated.Parent = script.Parent  
 
 
 local function BuildObjectValueAndMapIt2Self(theObjectValueData)
@@ -25,7 +26,8 @@ local function BuildObjectValueAndMapIt2Self(theObjectValueData)
 end
 
 
-
+local objectValues   = {} ::{string: ValueBase & {string: ValueBase}}
+local instanceValues = {} :: {Instance:{string: ValueBase & {string: ValueBase}}}
 
 
 -- !== ================================================================================||>
@@ -47,8 +49,7 @@ ValueServer.ValueTypes = {
     RayValue        = "RayValue",
 }
 
-local objectValues   = {} ::{string: ValueBase & {string: ValueBase}}
-local instanceValues = {} :: {Instance:{string: ValueBase & {string: ValueBase}}}
+
 
 
 -- =============================== Methods ===============================||>
@@ -60,14 +61,23 @@ function ValueServer.new(theObjectValueData: ValueComponent, aNamespace: string?
     local TheNewObjectValue = BuildObjectValueAndMapIt2Self(theObjectValueData)
     TheNewObjectValue.Parent = TheObjectValuesFolder 
 
+    ValueCreated:FireAllClients({ObjectValue = TheNewObjectValue, Namespace = aNamespace})  
+
     if aNamespace then  
         local anExistingNamespace = objectValues[aNamespace]
+        local AnExistingNamespaceFolder
+
         if not anExistingNamespace then
             objectValues[aNamespace] = {}
             anExistingNamespace = objectValues[aNamespace]
+
+            AnExistingNamespaceFolder = Instance.new("Folder")
+            AnExistingNamespaceFolder.Name   = aNamespace
+            AnExistingNamespaceFolder.Parent = TheObjectValuesFolder
         end
         
         anExistingNamespace[TheNewObjectValue.Name] = TheNewObjectValue
+        TheNewObjectValue.Parent = AnExistingNamespaceFolder 
 
     else
         objectValues[TheNewObjectValue.Name] = TheNewObjectValue
@@ -85,6 +95,9 @@ end
 function ValueServer.newForInstance(theInstance: Instance, theObjectValueData: ValueComponent, aNamespace: string?): ValueBase
     local TheNewObjectValue: ValueBase = BuildObjectValueAndMapIt2Self(theObjectValueData)
     TheNewObjectValue.Parent = TheObjectValuesFolder 
+
+    ValueCreated:FireAllClients({ObjectValue = TheNewObjectValue, Namespace = aNamespace, Instance = theInstance})  
+
 
     local theInstanceObjectValues = instanceValues[theInstance]
 
@@ -139,6 +152,8 @@ function ValueServer.get(theObjectValueName: string, aNamespace: string?): Value
 
     return objectValues[theObjectValueName] or warn(theObjectValueName, "Object value was not found, make sure it exists!") and nil
 end
+
+
 
 function ValueServer.getFromInstance(theInstance: Instance, theObjectValueName: string, aNamespace: string?): ValueBase?
     local theInstanceObjectValues = instanceValues[theInstance]

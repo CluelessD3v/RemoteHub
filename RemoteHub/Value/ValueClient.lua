@@ -1,117 +1,94 @@
-local GlobalValuesFolder: Folder = script.Parent.GlobalValues
+local GlobalValuesFolder: Folder = script.Parent.ObjectValues
+local ValueCreated: RemoteEvent = script.Parent.ValueCreated
 
 
-
+local objectValues   = {} ::{string: ValueBase & {string: ValueBase}}
+local instanceValues = {} :: {Instance:{string: ValueBase & {string: ValueBase}}}
 
 local ValueClient = {} 
 ValueClient.__index = ValueClient
 
 
-function ValueClient.get(theObjectValueName: string, aNamespace: string?)
-    local TheRequestedValue: ValueBase
-
+local function WaitForInstance(theInstanceName2LookUp: string, theParent2LookIn: Instance, aTimeout: number?): Instance?
     local elapsedTime: number      = 0
-    local timeoutAt: number        = 5  --> seconds
+    aTimeout = aTimeout or 5
 
-
-
-
-    if aNamespace then  --# Look for the namespace folder
-        local TheNamespaceFolder = GlobalValuesFolder:FindFirstChild(aNamespace)
-        
-        if TheNamespaceFolder == nil or TheNamespaceFolder:FindFirstChild(theObjectValueName)  then --# Ergo the value does not exist either sooo wait for the namespace to exist
-            warn(aNamespace, "namespace was not found! Waiting for it to exist, this will yield the thread!")
-            
-            repeat
-                TheNamespaceFolder = GlobalValuesFolder:FindFirstChild(aNamespace)
-
-                if TheNamespaceFolder and TheNamespaceFolder:FindFirstChild(theObjectValueName) then  
-                    TheRequestedValue = TheNamespaceFolder:FindFirstChild(theObjectValueName) 
-                    break
-                end
+    local RequestedInstance = theParent2LookIn:FindFirstChild(theInstanceName2LookUp)
     
-                elapsedTime += 1
-                task.wait(1)
-        
-            until elapsedTime >= timeoutAt
+    if not RequestedInstance then
+        warn(theInstanceName2LookUp, "was not found within", theParent2LookIn, "waiting for it to exist for", tostring(aTimeout), "seconds... this will yield the thread!")
+        repeat
+            task.wait(1)
+
+            elapsedTime += 1
+
+            RequestedInstance = theParent2LookIn:FindFirstChild(theInstanceName2LookUp)
+            if RequestedInstance then break end
+
+        until elapsedTime >= aTimeout
+    end
+
+    return RequestedInstance or warn(theInstanceName2LookUp, "was not found within", theParent2LookIn, "Make sure it's being created!") and nil
+end
+
+
+function ValueClient.get(theObjectValueName: string, aNamespace: string?):  ValueBase?
+    local TheRequestedObjectValue
+    local TIMEOUT = 5  --> seconds
+
+
+    if aNamespace then 
+        local AnExistingNamespaceFolder = WaitForInstance(aNamespace, GlobalValuesFolder, TIMEOUT)
+        if not AnExistingNamespaceFolder then 
+            return 
         end
 
-    else  --# Search directly under the global folders 
-        TheRequestedValue = GlobalValuesFolder:FindFirstChild(theObjectValueName)
+        TheRequestedObjectValue =  WaitForInstance(theObjectValueName, AnExistingNamespaceFolder, TIMEOUT)
+        if not TheRequestedObjectValue then
+            return
+        end
 
-        if not TheRequestedValue then
-            warn(theObjectValueName, "Object Value was not found waiting for its creation. This will yield the thread!")
-        
-            repeat
-                TheRequestedValue = GlobalValuesFolder:FindFirstChild(theObjectValueName) 
-                
-                if TheRequestedValue ~= nil then 
-                    break
-                end
-    
-                elapsedTime += 1
-                task.wait(1)
-        
-            until elapsedTime >= timeoutAt     
+    else
+        TheRequestedObjectValue = WaitForInstance(theObjectValueName, GlobalValuesFolder, TIMEOUT)
+        if not TheRequestedObjectValue then
+            return
         end
     end
 
 
-    return TheRequestedValue or warn("Exhausted wait time...", theObjectValueName, "Was not found!")
+    return TheRequestedObjectValue
+
 end
 
 
 
-function ValueClient.getFromInstance(theInstance: Instance, theObjectValueName: string, aNamespace: string?)
+function ValueClient.getFromInstance(theInstance: Instance, theObjectValueName: string, aNamespace: string?): ValueBase?
     local TheRequestedValue: ValueBase
-
-    local elapsedTime: number      = 0
-    local timeoutAt: number        = 5  --> seconds
-
-
-    if aNamespace then  --# Look for the namespace folder
-        local TheNamespaceFolder = theInstance:FindFirstChild(aNamespace)
-        
-        if TheNamespaceFolder == nil or TheNamespaceFolder:FindFirstChild(theObjectValueName)  then --# Ergo the value does not exist either sooo wait for the namespace to exist
-            warn(aNamespace, "namespace was not found! Waiting for it to exist, this will yield the thread!")
-            
-            repeat
-                TheNamespaceFolder = theInstance:FindFirstChild(aNamespace)
-
-                if TheNamespaceFolder and TheNamespaceFolder:FindFirstChild(theObjectValueName) then  
-                    TheRequestedValue = TheNamespaceFolder:FindFirstChild(theObjectValueName) 
-                    break
-                end
-    
-                elapsedTime += 1
-                task.wait(1)
-        
-            until elapsedTime >= timeoutAt
-        end
-
-    else  --# Search directly under the global folders 
-        TheRequestedValue = theInstance:FindFirstChild(theObjectValueName)
-        if not TheRequestedValue then
-            warn(theObjectValueName, "Object Value was not found waiting in", theInstance,"waiting for its creation. This will yield the thread!")
-
-            repeat
-                TheRequestedValue = theInstance:FindFirstChild(theObjectValueName) 
-                
-                if TheRequestedValue ~= nil then 
-                    break
-                end
-    
-                elapsedTime += 1
-                task.wait(1)
-        
-            until elapsedTime >= timeoutAt            
-        end
-        warn(theObjectValueName, "Object Value was not found waiting for its creation. This will yield the thread!")
+    local TIMEOUT = 5  --> seconds
+    if not theInstance then
+        return warn("the given instance is nil!") and nil
     end
 
-    return TheRequestedValue or warn("Exhausted wait time...", theObjectValueName, "Was not found!")
+    if aNamespace then 
+        local AnExistingNamespaceFolder = WaitForInstance(aNamespace, theInstance, TIMEOUT)
+        if not AnExistingNamespaceFolder then 
+            return 
+        end
+
+        TheRequestedObjectValue =  WaitForInstance(theObjectValueName, AnExistingNamespaceFolder, TIMEOUT)
+        if not TheRequestedObjectValue then
+            return
+        end
+
+    else
+        TheRequestedObjectValue = WaitForInstance(theObjectValueName, theInstance, TIMEOUT)
+        if not TheRequestedObjectValue then
+            return
+        end
+    end
+
+
+    return TheRequestedObjectValue
 end
 
 
-
-return ValueClient
