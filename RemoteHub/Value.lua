@@ -6,9 +6,22 @@ TheObjectValuesFolder.Parent = game:GetService("ReplicatedStorage")
 
 local theInterValuesRegistry   = {} ::{string: ValueBase & {string: ValueBase}}
 
-local ValueServer = {}
+local Value = {}
 
-ValueServer.new = function(theObjectValueData: {Name: string?, Type: ValueTypes, InitialValue: ValueTypes?, Parent: Instance? })
+Value.ValueTypes = {
+    StringValue     = "StringValue",
+    NumberValue     = "NumberValue",
+    IntValue        = "IntValue",
+    CFrameValue     = "CFrameValue",
+    Vector3Value    = "Vector3Value",
+    BoolValue       = "BoolValue",
+    Color3Value     = "Color3Value",
+    BrickColorValue = "BrickColorValue",
+    RayValue        = "RayValue",
+}
+
+
+Value.new = function(theObjectValueData: {Name: string?, Type: ValueTypes, InitialValue: ValueTypes?, Parent: Instance? })
     theObjectValueData.Type = theObjectValueData.Type or "ObjectValue"
 
     local TheNewObjectValue: ValueBase = Instance.new(theObjectValueData.Type)
@@ -25,8 +38,8 @@ end
 
 
 --! Experimental registry not sure if this will stay.
-ValueServer.GetValueFromRegistry = function(theObjectValueName)
+Value.GetValueFromRegistry = function(theObjectValueName)
     return theInterValuesRegistry[theObjectValueName] or warn(theObjectValueName, "Object value was not found, make sure it exists!") and nil
 end
 
-return ValueServer
+return Value
