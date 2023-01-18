@@ -2,23 +2,19 @@ local RemoteEvents: Folder = script.Parent.RemoteEvents
 
 
 local EventClient = {} 
-EventClient.__index = EventClient
 
-function EventClient.getEvent(name: string, timeout: number)
-    local self = setmetatable({}, EventClient)
-    self.Name = name
+function EventClient.getRegisteredEvent(name: string, timeout: number): RemoteEvent?
 
     local theElapsedTime          = 0
     local timeoutAt            = timeout or 5
-    local MyEvent: RemoteEvent = RemoteEvents:FindFirstChild(name)
 
-    self.OnClientEvent = MyEvent.OnClientEvent:: RBXScriptSignal
+    local TheEvent: RemoteEvent = RemoteEvents:FindFirstChild(name)
 
-    if not MyEvent then
+    if not TheEvent then
         repeat
-            MyEvent = RemoteEvents:FindFirstChild(name) 
+            TheEvent = RemoteEvents:FindFirstChild(name) 
             
-            if MyEvent then 
+            if TheEvent then 
                 break
             end
 
@@ -29,22 +25,13 @@ function EventClient.getEvent(name: string, timeout: number)
     end
 
 
-    if MyEvent then 
-        table.freeze(self)
-        return self
+    if TheEvent then 
+        return TheEvent
     else 
         warn("Infinite yield on", name, ", the event was not found on time! Are you sure it was created?")
         return nil
     end 
     
-end
-
-
-
-
-function EventClient:FireServer(...:any)
-    local MyEvent = RemoteEvents[self.Name]
-    MyEvent:FireServer(...)
 end
 
 

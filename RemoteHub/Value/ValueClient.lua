@@ -92,3 +92,4 @@ function ValueClient.getFromInstance(theInstance: Instance, theObjectValueName: 
 end
 
 
+return ValueClient
