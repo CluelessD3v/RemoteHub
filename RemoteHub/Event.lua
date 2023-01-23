@@ -1,4 +1,5 @@
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local RemoteEventsFolder: Folder = Instance.new("Folder")
 RemoteEventsFolder.Name   = "RemoteEvents"
@@ -11,26 +12,13 @@ local EventServer = {}
 function EventServer.new(name: string)
     local TheNewEvent = Instance.new("RemoteEvent")
     TheNewEvent.Name   = name
-    TheNewEvent.Parent = RemoteEventsFolder
+    TheNewEvent.Parent = ReplicatedStorage
 
     theInternaEventlRegistry[name] = TheNewEvent
-
     return TheNewEvent
 end
 
 
---[[
-    Returns an event with the given event name, this will only work if the event was created via Remote hub event library!
-    since those are the only ones getting regitered.
-]]
-function EventServer.getRegisteredEvent(theEventName: string): RemoteEvent
-    local AnEvent = theInternaEventlRegistry[theEventName]
-    if AnEvent then 
-        return AnEvent
-    end
-    
-    warn("Could not find a remote event named", theEventName, "did you created it?")
-end
 
 
 
@@ -109,7 +97,7 @@ end
     WildCard function that evalutes the predicate for EACH player in the given players table. The event will fire for the player element
     only if the predicate returns true.
 ]]
-function EventServer.FireIfTrue(anEvent: RemoteEvent, thePlayersToFireTo: {Player} | {[any]: Player}, thePredicate: (player: Player) -> nil, ...:any)
+function EventServer.FireIfTrue(anEvent: RemoteEvent, thePlayersToFireTo: {Player} | {[any]: Player}, thePredicate: (player: Player) -> nil, ...:any): nil
     if typeof(anEvent) == "Instance" and anEvent:IsA("RemoteEvent") then
         for _, aPlayer in thePlayersToFireTo do
             if thePredicate(aPlayer) == true then
