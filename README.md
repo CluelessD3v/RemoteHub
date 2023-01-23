@@ -26,7 +26,7 @@ Remote Hub includes 3 API's:
 
 ### Functions
 #### `new`
->**Params: `(aName: string)`**
+>**Params: `(theEventData: {Name: string?, Parent: Instance?})`**
 > *Creates a new Remote Event Instance of the given name within the given parent. if no parent is given then the remote event will be parented to ReplicatedStorage.*
 
 
