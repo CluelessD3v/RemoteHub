@@ -1,6 +1,6 @@
 [package]
 name = "cluelessd3v/remotehub"
-version = "0.4.1"
+version = "0.5.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 license = "MIT OR Apache-2.0"
