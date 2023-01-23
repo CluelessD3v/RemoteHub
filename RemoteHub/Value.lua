@@ -20,8 +20,6 @@ Value.ValueTypes = {
     RayValue        = "RayValue",
 }
 
-table.freeze(Value.ValueTypes)
-
 
 Value.new = function(theObjectValueData: {Name: string?, Type: ValueTypes, InitialValue: ValueTypes?, Parent: Instance? })
     theObjectValueData.Type = theObjectValueData.Type or "ObjectValue"
