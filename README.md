@@ -24,38 +24,21 @@ Remote Hub includes 3 API's:
 ## Event
 
 
-### Methods
-
-#### Server
-[[abstract | Server]]
-| These methods can only be used in server scripts and modules required by server scripts** |
+### Functions
 #### `new`
 >**Params: `(aName: string)`**
-> *Constructs a Remote event with the given name and parents it to a Remote Events Folder.*
-
-
-#### `FireClient`
-> **Params:`(thePlayer: Player, ...:any)`**
-> *Equal to FireClient*
-
-
-
-#### `FireAllClients`
->**Params: `(...:any)`**
-> *Equal to FireAllClients*
- 
-
+> *Creates a new Remote Event Instance of the given name within the given parent. if no parent is given then the remote event will be parented to ReplicatedStorage.*
 
 
 
 #### `FireSomeClients`
->**Params: `(thePlayersTable: {Player} | {any: Player}, ...:any)`**
+>**Params: `(anEvent: RemoteEvent, thePlayersTable: {Player} | {any: Player}, ...:any)`**
 > *Fires the event exclusively to the players in the given players table, essentially a whitelist*
 
 
 
 #### `FireSomeClientsExcept`
->**Params: (theExcludedPlayersTable: {Player} | {any: Player}, ...:any)**
+>**Params: (anEvent: RemoteEvent, theExcludedPlayersTable: {Player} | {any: Player}, ...:any)**
 > *The opposite of FireSomeClients, Fires the event exclusively to the players THAT ARE NOT in the given players table, essentially a blacklist*
 
 
@@ -63,23 +46,67 @@ Remote Hub includes 3 API's:
 
 
 #### `FireAllClientsInRadius`
->**Paras: `(aRadius: number, inPosition: Vector3, ...:any)`**
+>**Params: `(anEvent: RemoteEvent, aRadius: number, inPosition: Vector3, ...:any)`**
 > *Fires the event exclusively to the players within the given radius of the given position*
 
+
+### `FireAllClientsInRadiusExcept`
+>**Params: `(anEvent: RemoteEvent, thePlayersToExcludeTable: {Player} | {[any]: Player}, theRadius: number, thePosition: Vector3, ...:any)`**
+> *Fires the event exclusively to the players within the given radius of the given position*
 
 
 [[note | Wildcard function]]
 | A general use case Fire function in the case you *really* want to keep the event firing condition as a single logical unit, I don't approve using it since it's redundant and less readable, but hey it's there if you really want to use it.
 
 #### `FireIfTrue`
->**Params: (thePlayersTable: {Player} | {any: Player}, thePredicateFunction: (player: player) -> nil ...:any)**
+>**Params: (anEvent: RemoteEvent, thePlayersTable: {Player} | {any: Player}, thePredicateFunction: (player: player) -> nil ...:any)**
 > *Fires the event to the players in the given players table if the predicate function returns true*
 
 
 
 
+# Example
+
+*Notify the players in your team that you joined them* 
+
+**In a server script**
+```lua
+local Teams = game:GetService("Teams")
+
+local RemoteHub = require(game.ReplicatedStorage.RemoteHub)
+local Event = RemoteHub.Event
 
 
+
+local BlueTeam = Instance.new("Team", Teams)
+BlueTeam.Name = "BlueTeam"
+
+local RedTeam = Instance.new("Team", Teams)
+RedTeam.Name = "RedTeam"
+
+
+local NotifyPlayerJoinedTeam = Event.new({Name = "NotifyPlayerJoinedTeam"})
+
+game.Players.PlayerAdded:Connect(function(player)
+     player.characterAdded:Wait()
+     local teamsList = Teams:GetTeams()
+
+     player.Team = teamsList[math.random(1, #teamsList)]
+     Event.FireSomeClients(NotifyPlayerJoinedTeam, player.Team:GetPlayers(), player)
+end)
+```
+
+**In a local script**
+```lua
+local NotifyPlayerJoinedTeam: RemoteEvent = game.ReplicatedStorage.NotifyPlayerJoinedTeam
+
+NotifyPlayerJoinedTeam.OnClientEvent:Connect(function(player)
+     print(player, "joined our team!")
+end)
+```
+
+
+*That's pretty much the pattern to use Remote hub*
 
 
 # Footnotes:
