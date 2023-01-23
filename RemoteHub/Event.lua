@@ -11,7 +11,7 @@ local EventServer = {}
     Creates a new Remote Event Instance of the given name within the given parent.
     if no parent is given then the remote event will be parented to ReplicatedStorage.
 ]]
-function EventServer.new(theEventData: {Name: string?, Parent: Instance?})
+function EventServer.new(theEventData: {Name: string?, Parent: Instance?}): RemoteEvent
     local TheNewEvent = Instance.new("RemoteEvent")
     TheNewEvent.Name   = theEventData.Name or "RemoteEvent"
     TheNewEvent.Parent = theEventData.Parent or ReplicatedStorage
