@@ -1,13 +1,13 @@
 # Remote Hub
 
-An interface to stream line instancing of Remote Events, Remote Function, and Object Values through code. Inspired by [leitnick's Signal](https://sleitnick.github.io/RbxUtil/api/Signal/), & [Net](https://sleitnick.github.io/RbxUtil/api/Net).
+An interface to stream line instancing of Remote Events, Remote Function, and Object Values through code. Inspired by [Sleitnick's Signal](https://sleitnick.github.io/RbxUtil/api/Signal/), & [Net](https://sleitnick.github.io/RbxUtil/api/Net).
 
 
 This utility does not tries to pull magic wizardry, or meta-brograming, I made this because I don't like dealing with the process of having to create instances meant for communication through the explorer, and hey also made some useful functions because why not.
 
 **This is mainly a library, not a class/service! I'm not returning special objects or tables,  you're always dealing with an instance**
 
-[Get it on wally](remotehub = "cluelessd3v/remotehub@0.3.1")
+**[Get it on wally](https://wally.run/package/cluelessd3v/remotehub)**
 
 
 ***Proper Documentation coming soon***
