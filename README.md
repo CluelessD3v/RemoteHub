@@ -1,26 +1,16 @@
 # Remote Hub
 
-An interface to create more powerful remote communications inspired by Sleitnick's [Signal](https://sleitnick.github.io/RbxUtil/api/Signal/), & [Net](https://sleitnick.github.io/RbxUtil/api/Net).
-
-This utility does not tries to pull magic wizardry, or meta-brograming, *it just wraps around Remote instances (remote events, remote function, and object values) and give them much more functionality.*
+An interface to stream line instancing of Remote Events, Remote Function, and Object Values through code. Inspired by [leitnick's Signal](https://sleitnick.github.io/RbxUtil/api/Signal/), & [Net](https://sleitnick.github.io/RbxUtil/api/Net).
 
 
-**NOTE: This is just a pre-release, there's no type checking, not a whole lot of error handling, and no implementation for remote functions. These docos are placeholders!**
+This utility does not tries to pull magic wizardry, or meta-brograming, I made this because I don't like dealing with the process of having to create instances meant for communication through the explorer, and hey also made some useful functions because why not.
+
+**This is mainly a library, not a class/service! I'm not returning special objects or tables,  you're always dealing with an instance**
+
+[Get it on wally](remotehub = "cluelessd3v/remotehub@0.3.1")
 
 
-# How to require:
-All 3 interfaces are already indexed through Remote Hub, so no need to require anything else than Remote Hub module
-
-```lua
-local RemoteHub = require(ReplicatedStorage.RemoteHub)
-local Event = RemoteHub.Event
-local NewEvent = Event.new("TestEvent")
-
-local Value = RemoteHub.Value
-local newVal = Value.new("TestVal", Value.IntValue, 10)
-```
-
-# **[Get in on wally](https://wally.run/package/cluelessd3v/remotehub)**
+***Proper Documentation coming soon***
 
 
 # API's
@@ -29,34 +19,9 @@ Remote Hub includes 3 API's:
 - Remote Functions API called "Function" (For Remote Functions)
 - Object Values API called "Value" (For Object values)
 
-Each API has it's server and client version you can seamlessly retrieve
+
 
 ## Event
-### Properties
-
-#### `OnServerEvent`
-[[abstract | Server]]
-| This property can only be used in server scripts and modules required by server scripts
-> *Equal to OnServerEvent*
-
-
-
-#### `OnClientEvent`
-[[abstract | Client]]
-| This property can only be used in local scripts and modules required by local scripts
-> *Equal to OnClientEvent*
-
-
-
-<br>
-
----
----
----
-
-<br>
-
-
 
 
 ### Methods
@@ -113,74 +78,11 @@ Each API has it's server and client version you can seamlessly retrieve
 
 
 
-#### Client
-[[abstract | Client]]
-| these methods can only be used in local scripts and modules required by local scripts
-
-#### `getEvent`
-> **Params: `(aName: string, aTimeout: number)` YIELDS**
-> *Attempts to get Remote event of the given name created from the server, if it does not exists it'll wait the given timeout time or 5 seconds before it returns nil.*
 
 
 
 
-<br>
+# Footnotes:
+Developing this I realized that it would actually be useful to pull metabrogramming for this, lol. It would be nice that you could access these methods from the remote event instance itself, as in: `SomeRemoteEvent:FireSomeClients`, *[which would require me to wrap a metatable around remote comms instances](https://devforum.roblox.com/t/wrapping-with-metatables-or-how-to-alter-the-functionality-of-roblox-objects-without-touching-them/221611)*
 
----
----
----
-
-<br>
-
-
-
-
-
-
-## Function
-
-## Value
-
-### Properties
-
-#### `Name`
->**`string`**
-> *Non unique string identifier*
-
-#### `Value`
->**`any` (Value type dependant) **
->*Holds a reference to a value*
-
-#### `ValueTypes`
->**`Dictionary<string, string>`**
->*A dictionary of object value types you can use to pass to the server constructor function in case you don't want to use string literals.*
-
-
-
-### Events
-#### `Changed`
->**RbxScriptSignal**
->*Fired whenever the Value is changed.*
-
-
-
-
-### Methods
-#### Server
-
-#### `new`
->**Params:`name: string, type: string, initialValue: any?`**
-> *Constructs a new object of the given type with the given name, the initial value is optional*
-
-
-#### Client 
-### `getValue` 
->**Params: `name: string, timeout: number?` YIELDS** 
->*Attempts to get an already created value from the server, if it does not exist it'll wait the given timeout or 5 seconds before it returns nil.*
-
-[[abstract | Client]]
-| these methods can only be used in local scripts and modules required by local scripts
-
-
-
-
+But oh well, right now it's out of scope for now as I don't really need it, it just would be nice though.

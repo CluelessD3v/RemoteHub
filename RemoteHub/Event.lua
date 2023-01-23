@@ -5,21 +5,19 @@ local RemoteEventsFolder: Folder = Instance.new("Folder")
 RemoteEventsFolder.Name   = "RemoteEvents"
 RemoteEventsFolder.Parent = script.Parent
 
-local theInternaEventlRegistry = {} 
-
 local EventServer = {} 
 
-function EventServer.new(name: string)
+--[[
+    Creates a new Remote Event Instance of the given name within the given parent.
+    if no parent is given then the remote event will be parented to ReplicatedStorage.
+]]
+function EventServer.new(theEventData: {Name: string?, Parent: Instance?})
     local TheNewEvent = Instance.new("RemoteEvent")
-    TheNewEvent.Name   = name
-    TheNewEvent.Parent = ReplicatedStorage
+    TheNewEvent.Name   = theEventData.Name or "RemoteEvent"
+    TheNewEvent.Parent = theEventData.Parent or ReplicatedStorage
 
-    theInternaEventlRegistry[name] = TheNewEvent
     return TheNewEvent
 end
-
-
-
 
 
 --[[
