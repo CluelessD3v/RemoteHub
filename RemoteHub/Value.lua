@@ -1,9 +1,5 @@
 type ValueTypes = string | number | boolean | CFrame | Vector3 | Color3 | BrickColor 
 
-local TheObjectValuesFolder = Instance.new("Folder") :: Folder
-TheObjectValuesFolder.Name   = "ObjectValues"
-TheObjectValuesFolder.Parent = game:GetService("ReplicatedStorage")
-
 local theInterValuesRegistry   = {} ::{string: ValueBase & {string: ValueBase}}
 
 local Value = {}
