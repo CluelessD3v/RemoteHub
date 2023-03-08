@@ -1,9 +1,8 @@
 # Remote Hub
 
-An interface to stream line instancing of Remote Events, Remote Function, and Object Values through code. Inspired by [Sleitnick's Signal](https://sleitnick.github.io/RbxUtil/api/Signal/), & [Net](https://sleitnick.github.io/RbxUtil/api/Net).
-
-
-This utility does not tries to pull magic wizardry, or meta-brograming, I made this because I don't like dealing with the process of having to create instances meant for communication through the explorer, and hey also made some useful functions because why not.
+"An interface to streamline Remote Events, Remote Function, and Object Values instancing through code. Inspired by Sleitnick's Signal, & Net. 
+This utility does not tries to pull magic wizardry, or meta-brograming, I made this because I don't like dealing with the process of having to create instances meant for communication through the explorer, 
+and hey also made some useful functions because why not."
 
 **This is mainly a library, not a class/service! I'm not returning special objects or tables,  you're always dealing with an instance**
 
@@ -26,8 +25,8 @@ Remote Hub includes 3 API's:
 
 ### Functions
 #### `new`
->**Params: `(theEventData: {Name: string?, Parent: Instance?})`**
-> *Creates a new Remote Event Instance of the given name within the given parent. if no parent is given then the remote event will be parented to ReplicatedStorage.*
+>**Params: `(name: string?, namespace: string?)`**
+> *Creates a new Remote Event Instance of the given name within the given namespace if any. if no parent is given then the remote event will be childed to the module.*
 
 
 
@@ -63,6 +62,11 @@ Remote Hub includes 3 API's:
 > *Fires the event to the players in the given players table if the predicate function returns true*
 
 
+**Client**
+
+### `get`
+>**Params: `(name: string?, namespace: string?)`**
+> *Attempts to get an existing remote event from RemoteHub, if it's not found then it'll wait 10 seconds for it to appear*
 
 
 # Example
@@ -85,7 +89,7 @@ local RedTeam = Instance.new("Team", Teams)
 RedTeam.Name = "RedTeam"
 
 
-local NotifyPlayerJoinedTeam = Event.new({Name = "NotifyPlayerJoinedTeam"})
+local NotifyPlayerJoinedTeam = Event.new("NotifyPlayerJoinedTeam")
 
 game.Players.PlayerAdded:Connect(function(player)
      player.characterAdded:Wait()
@@ -98,7 +102,10 @@ end)
 
 **In a local script**
 ```lua
-local NotifyPlayerJoinedTeam: RemoteEvent = game.ReplicatedStorage.NotifyPlayerJoinedTeam
+local RemoteHub = require(game.ReplicatedStorage.RemoteHub)
+local Event = RemoteHub.Event
+
+local NotifyPlayerJoinedTeam: RemoteEvent = Event.get("NotifyPlayerJoinedTeam")
 
 NotifyPlayerJoinedTeam.OnClientEvent:Connect(function(player)
      print(player, "joined our team!")

@@ -1,8 +1,10 @@
 [package]
 name = "cluelessd3v/remotehub"
-version = "0.5.1"
+version = "0.6.1"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 license = "MIT OR Apache-2.0"
 authors = ["Joaquin Von Chong/Clueless_Dev <cluelessdevmail@gmail.com>"]
+description = "An interface to streamline Remote Events instancing, Remote Function, and Object Values through code. Inspired by Sleitnick's Signal, & Net. Includes some useful Event functions, read more at https://github.com/CluelessD3v/RemoteHub"
+
 [dependencies]
