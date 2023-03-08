@@ -1,11 +1,9 @@
 local Players = game:GetService("Players")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
-local RemoteEventsFolder: Folder = Instance.new("Folder")
-RemoteEventsFolder.Name   = "RemoteEvents"
-RemoteEventsFolder.Parent = script.Parent
-
+local RemoteEventsFolder
 local EventServer = {} 
 
 --[[
@@ -128,20 +126,46 @@ end
 
 local EventClient = {}
 
--- function EventClient.Get(name, namespace)
---     local timeout = 5
---     local elapsedTime = 0
+function EventClient.get(name, namespace)
+    local timeout = 10
+    local elapsedTime = 0
     
---     local NamespaceFolder = namespace or nil
---     if namespace then
---         namespace = RemoteEventsFolder:FindFirstChild(namespace) or  error(namespace, "does not exist, did you forgot to create it?")
---     end
-    
-    
---     local RemoteEvent = if namespace 
+    local NamespaceFolder
+    local FolderToLook
 
--- end
+    if namespace then
+        namespace = RemoteEventsFolder:FindFirstChild(namespace) or  error(namespace.." namespace does not exist, did you forgot to create it?")
+        FolderToLook = namespace
+    else
+        FolderToLook = RemoteEventsFolder
+    end
+    
+    
+    local RemoteEvent = FolderToLook:FindFirstChild(name)
+    
+    if not RemoteEvent then
+        repeat
+            task.wait(1)
+            elapsedTime += 1
+            RemoteEvent =  FolderToLook:FindFirstChild(name)
+        until RemoteEvent or timeout > elapsedTime
+    end
+
+    return RemoteEvent or error("Infinite yield on ".. name.. " Did you forgot to create it?")
+end
 
 
 table.freeze(EventServer)
-return EventServer
+table.freeze(EventClient)
+
+if RunService:IsServer() then
+    RemoteEventsFolder        = Instance.new("Folder")
+    RemoteEventsFolder.Name   = "RemoteEvents"
+    RemoteEventsFolder.Parent = script.Parent
+
+    return EventServer
+
+elseif RunService:IsClient() then
+    RemoteEventsFolder = script.Parent.RemoteEvents
+    return EventClient
+end
