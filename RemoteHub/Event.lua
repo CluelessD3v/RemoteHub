@@ -1,24 +1,38 @@
 local Players = game:GetService("Players")
+local ProximityPromptService = game:GetService("ProximityPromptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
-local RemoteEventsFolder: Folder = Instance.new("Folder")
-RemoteEventsFolder.Name   = "RemoteEvents"
-RemoteEventsFolder.Parent = script.Parent
-
+local RemoteEventsFolder
 local EventServer = {} 
 
 --[[
     Creates a new Remote Event Instance of the given name within the given parent.
     if no parent is given then the remote event will be parented to ReplicatedStorage.
 ]]
-function EventServer.new(theEventData: {Name: string?, Parent: Instance?}): RemoteEvent
-    local TheNewEvent = Instance.new("RemoteEvent")
-    TheNewEvent.Name   = theEventData.Name or "RemoteEvent"
-    TheNewEvent.Parent = theEventData.Parent or ReplicatedStorage
+function EventServer.new(name: string?, namespace: string?): RemoteEvent
+    local RemoteEvent = Instance.new("RemoteEvent")
+    RemoteEvent.Name   = name or "RemoteEvent"
 
-    return TheNewEvent
+
+    --# If a namespace is passed, check if it exist, else create it. supress FFC
+    --#  error if no namespace is passed
+    local NamespaceFolder
+
+    if namespace  then
+        NamespaceFolder = RemoteEventsFolder:FindFirstChild(namespace)
+        if not NamespaceFolder then
+            NamespaceFolder        = Instance.new("Folder")
+            NamespaceFolder.Name   = namespace
+            NamespaceFolder.Parent = RemoteEventsFolder  
+        end
+    end
+
+    --# Parent to either the namespace folder or the remote event folder
+    RemoteEvent.Parent = NamespaceFolder or RemoteEventsFolder
+    
+    return RemoteEvent
 end
-
 
 --[[
     Fires the given remote event to all players found in the players table, basically a whitelist.
@@ -107,5 +121,51 @@ end
 
 
 
+
+
+
+local EventClient = {}
+
+function EventClient.get(name, namespace)
+    local timeout = 10
+    local elapsedTime = 0
+    
+    local NamespaceFolder
+    local FolderToLook
+
+    if namespace then
+        namespace = RemoteEventsFolder:FindFirstChild(namespace) or  error(namespace.." namespace does not exist, did you forgot to create it?")
+        FolderToLook = namespace
+    else
+        FolderToLook = RemoteEventsFolder
+    end
+    
+    
+    local RemoteEvent = FolderToLook:FindFirstChild(name)
+    
+    if not RemoteEvent then
+        repeat
+            task.wait(1)
+            elapsedTime += 1
+            RemoteEvent =  FolderToLook:FindFirstChild(name)
+        until RemoteEvent or timeout > elapsedTime
+    end
+
+    return RemoteEvent or error("Infinite yield on ".. name.. " Did you forgot to create it?")
+end
+
+
 table.freeze(EventServer)
-return EventServer
+table.freeze(EventClient)
+
+if RunService:IsServer() then
+    RemoteEventsFolder        = Instance.new("Folder")
+    RemoteEventsFolder.Name   = "RemoteEvents"
+    RemoteEventsFolder.Parent = script.Parent
+
+    return EventServer
+
+elseif RunService:IsClient() then
+    RemoteEventsFolder = script.Parent.RemoteEvents
+    return EventClient
+end
