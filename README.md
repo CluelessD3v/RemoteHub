@@ -9,7 +9,7 @@ Also added some useful functions to event because why not.
 **This is a library, not a class/service! I'm not returning special objects or tables in the constructors,  you're always dealing with a remote instance** 
 
 
-### **WARNING: Remote functions and events are parented to module, you are free to reparent them, but do note that the client getter will NOT work unless the remote is childed to the module were it was created originaly** 
+### **WARNING: Remote functions and events are parented to the module, you are free to reparent them, but do note that the client getter will NOT work unless the remote is childed to the module were it was created originaly** 
 
 **[Get it on wally](https://wally.run/package/cluelessd3v/remotehub)**
 
@@ -59,7 +59,7 @@ Remote Hub includes 3 API's:
 
 
 [[note | Wildcard function]]
-| A general use case Fire function in the case you *really* want to keep the event firing condition as a single logical unit, I don't approve using it since it's redundant and less readable, but hey it's there if you really want to use it.
+| A general use case Fire function in the case you *really* want to keep the event firing condition as a single logical unit, I don't really use it since it's redundant and less readable (IMO), but hey it's there if you really want to use it.
 
 #### `FireIfTrue`
 >**Params: (anEvent: RemoteEvent, thePlayersTable: {Player} | {any: Player}, thePredicateFunction: (player: player) -> nil ...:any)**
