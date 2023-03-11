@@ -120,3 +120,5 @@ end)
 Developing this I realized that it would actually be useful to pull metabrogramming for this, lol. It would be nice that you could access these methods from the remote event instance itself, as in: `SomeRemoteEvent:FireSomeClients`, *[which would require me to wrap a metatable around remote comms instances](https://devforum.roblox.com/t/wrapping-with-metatables-or-how-to-alter-the-functionality-of-roblox-objects-without-touching-them/221611)*
 
 But oh well, right now it's out of scope for now as I don't really need it, it just would be nice though.
+
+
