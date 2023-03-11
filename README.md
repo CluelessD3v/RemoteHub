@@ -1,10 +1,15 @@
 # Remote Hub
 
 "An interface to streamline Remote Events, Remote Function, and Object Values instancing through code. Inspired by Sleitnick's Signal, & Net. 
-This utility does not tries to pull magic wizardry, or meta-brograming, I made this because I don't like dealing with the process of having to create instances meant for communication through the explorer, 
-and hey also made some useful functions because why not."
 
-**This is mainly a library, not a class/service! I'm not returning special objects or tables,  you're always dealing with an instance**
+This utility does not tries to pull magic wizardry, or meta-brograming, simply put: I made this because I like to create remote communication instances  through code.
+
+Also added some useful functions to event because why not.
+
+**This is a library, not a class/service! I'm not returning special objects or tables in the constructors,  you're always dealing with a remote instance** 
+
+
+### **WARNING: Remote functions and events are parented to module, you are free to reparent them, but do note that the client getter will NOT work unless the remote is childed to the module were it was created originaly** 
 
 **[Get it on wally](https://wally.run/package/cluelessd3v/remotehub)**
 
@@ -16,12 +21,11 @@ and hey also made some useful functions because why not."
 Remote Hub includes 3 API's:
 - Remote Events API called "Event" (For Remote Events)
 - Remote Functions API called "Function" (For Remote Functions)
-- Object Values API called "Value" (For Object values)
+- Object Values API called "Value" (For Object values) **Not finalized**
 
 
 
 ## Event
-
 
 ### Functions
 #### `new`
@@ -69,6 +73,30 @@ Remote Hub includes 3 API's:
 > *Attempts to get an existing remote event from RemoteHub, if it's not found then it'll wait 10 seconds for it to appear*
 
 
+
+
+
+## Function
+
+
+### Functions
+
+
+#### `new`
+>**Params: `(name: string?, namespace: string?)`**
+> *Creates a new Remote Function Instance of the given name within the given namespace if any. if no parent is given then the Remote Function will be childed to the module.*
+
+
+**Client**
+
+### `get`
+>**Params: `(name: string?, namespace: string?)`**
+> *Attempts to get an existing Remote Function from RemoteHub, if it's not found then it'll wait 10 seconds for it to appear*
+
+
+
+
+
 # Example
 
 *Notify the players in your team that you joined them* 
@@ -113,7 +141,7 @@ end)
 ```
 
 
-*That's pretty much the pattern to use Remote hub*
+*That's pretty much the pattern to use Remote hub, Function works exactly the same*
 
 
 # Footnotes:
