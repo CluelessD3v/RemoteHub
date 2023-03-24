@@ -52,8 +52,8 @@ end
 function EventServer.FireSomeClientsExcept(anEvent: RemoteEvent, thePlayersToExcludeTable:{Player} | {[any]: Player}, ...:any)
     if typeof(anEvent) == "Instance" and anEvent:IsA("RemoteEvent") then
         
-        for index, aPlayer in Players:GetPlayers() do
-            if thePlayersToExcludeTable[index] == aPlayer then continue end
+        for _, aPlayer in Players:GetPlayers() do
+            if table.find(thePlayersToExcludeTable, aPlayer) then continue end
             anEvent:FireClient(aPlayer, ...)
         end
     end
